@@ -3,7 +3,7 @@ CC = gcc
 TARGET = arrayLinkedlist
 
 C_SRCS = $(wildcard *.c)
-C_OBJS = $(C_SRCS:.c=.o)
+C_OBJS = $(patsubst %.c, build/%.o, $(C_SRCS))
 
 
 
@@ -12,5 +12,6 @@ all: $(TARGET)
 $(TARGET): $(C_OBJS)
 	$(CC) -o $@ $(C_OBJS)
 
-%.o: %.c
+build/%.o: %.c
+	mkdir -p $(shell dirname $@)
 	$(CC) -c -g $< -o $@
