@@ -1,0 +1,44 @@
+#include <wiringPi.h>
+#include <stdio.h>
+#include <sys/time.h>
+
+//#include "lcd.h"
+
+#define Trig    23
+#define Echo    24
+
+#define LED 17
+
+float measureDistance(void) 
+{   
+    // Insert your code
+}
+
+int main(void) 
+{	
+    float distance;
+
+    struct timeval tv1;
+    struct timeval tv2;
+
+    wiringPiSetupGpio();
+    
+    pinMode(Echo, INPUT);
+    pinMode(Trig, OUTPUT);
+    pinMode(LED, OUTPUT);
+
+    while(1) 
+    {
+        distance = measureDistance();
+        printf("%0.2f cm\n", distance);
+        
+        if (distance < 10.0)
+            digitalWrite(LED, 1);
+        else
+            digitalWrite(LED, 0);
+        
+        delay(1000);
+    }	
+    
+    return 0;
+}
