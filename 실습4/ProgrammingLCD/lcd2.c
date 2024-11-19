@@ -16,6 +16,8 @@
 
 
 int deviceHandle;                                   // Seems that it maps to the register address of the device
+int currentCursorPos = 0;
+
 
 void toggleLCDEnable(int eightBits)
 {
@@ -92,6 +94,16 @@ void displayText(const char *stringPointer)
   // Assignment 1: Insert your code here 
   // so that displayText(stringPointer) prints the requested string on LCD
   // You have to send characters one by one each time using the sendBitsToLCD() function
+
+  while (*stringPointer) {
+    if (*stringPointer == '\n') {
+      stringPointer++;
+      continue;
+    }
+    sendBitsToLCD(*stringPointer, LCD_RS_DATA);
+    currentCursorPos++; // 커서 위치 저장용
+    stringPointer++;
+  }
 }
 
 // Change the text line
@@ -100,22 +112,63 @@ void changeLine(int line)
   // Assignment 2: Insert your code here 
   // so that changeLine(line) changes the cursor position to the requested "line"
   // You also have to move the cursor to the start of the "line"
+
+  if (line == 1) {
+    currentCursorPos = 0;
+  } else if (line == 2) {
+
+    if (currentCursorPos < 40) { // 첫 번째 줄에서 두 번째 줄 호출했으면
+      
+      for (int i =0; i < 40 - currentCursorPos; i++) {
+        sendBitsToLCD(0x14, LCD_RS_INST); // 오른쪽으로 커서 이동
+      }
+    } else { //두 번째 줄에서 호출 했으면
+
+      for (int i =0; i < currentCursorPos - 40; i++) {
+        sendBitsToLCD(0x10, LCD_RS_INST); // 왼쪽으로 커서 이동
+      }
+    }
+    currentCursorPos = 40;
+  }
+
+
 }
 
 int main(void)
 {
     // Initialize wiringPI, I2C, and LCD
     wiringPiSetupGpio();
-    deviceHandle = wiringPiI2CSetup(Detected_DEVICE_ID_BY_I2C);
-    printf("deviceHandle = %d\n", deviceHandle);
+    deviceHandle = wiringPiI2CSetup(Detected_DEVICE_ID_BY_I2C);      
     initializeLCD();
 
     char textString1[] = "Hello World";
     char textString2[] = "This is LCD";
 
     // Display 'Hello World' on the first line
-    printf("Hello World.\n");
+    printf("Hello World.");
     displayText(textString1);
     
+    // Display 'This is LCD' on the second line
+    printf("This is LCD.");
+    changeLine(2);
+    sprintf(textString2, "Yes!!! I'm LED!");
+    displayText(textString2);
+
+    printf("Enter your text: ");
+    fgets(textString1, 128, stdin);                   // fgets accepts string until LF, while scanf accepts string until space
+    printf("Your text: %s", textString1);
+    
+    sendBitsToLCD(0x01, LCD_RS_INST | LCD_RW_WRITE);  // "0000 0001" (clear display)
+    changeLine(1);
+    displayText(textString1);
+
+    printf("Enter your text: ");
+    fgets(textString1, 128, stdin);
+    printf("Your text: %s", textString1);
+    
+    sendBitsToLCD(0x01, LCD_RS_INST | LCD_RW_WRITE);  // "0000 0001" (clear display)
+    changeLine(1);
+    displayText(textString1);
+
     return 0;
 }

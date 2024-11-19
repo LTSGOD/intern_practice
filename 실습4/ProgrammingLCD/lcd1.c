@@ -92,6 +92,12 @@ void displayText(const char *stringPointer)
   // Assignment 1: Insert your code here 
   // so that displayText(stringPointer) prints the requested string on LCD
   // You have to send characters one by one each time using the sendBitsToLCD() function
+
+  while (*stringPointer) {
+    sendBitsToLCD(*stringPointer, LCD_RS_DATA);
+    stringPointer++;
+  }
+
 }
 
 // Change the text line
@@ -106,7 +112,8 @@ int main(void)
 {
     // Initialize wiringPI, I2C, and LCD
     wiringPiSetupGpio();
-    fdI2C = wiringPiI2CSetup(I2C_ADDR);      
+    deviceHandle = wiringPiI2CSetup(Detected_DEVICE_ID_BY_I2C);
+    printf("deviceHandle = %d\n", deviceHandle);
     initializeLCD();
 
     char textString1[] = "Hello World";
@@ -116,27 +123,5 @@ int main(void)
     printf("Hello World.\n");
     displayText(textString1);
     
-    // Display 'This is LCD' on the second line
-    printf("This is LCD.\n");
-    changeLine(2);
-    sprintf(textString2, "Yes!!! I'm LED!");
-    displayText(textString2);
-
-    printf("Enter your text: ");
-    fgets(textString1, 128, stdin);                   // fgets accepts string until LF, while scanf accepts string until space
-    printf("Your text: %s", textString1);
-    
-    sendBitsToLCD(0x01, LCD_RS_INST | LCD_RW_WRITE);  // "0000 0001" (clear display)
-    changeLine(1);
-    displayText(textString1);
-
-    printf("Enter your text: ");
-    fgets(textString1, 128, stdin);
-    printf("Your text: %s", textString1);
-    
-    sendBitsToLCD(0x01, LCD_RS_INST | LCD_RW_WRITE);  // "0000 0001" (clear display)
-    changeLine(1);
-    displayText(textString1);
-
     return 0;
 }
