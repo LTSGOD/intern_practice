@@ -20,6 +20,17 @@ int main(void)
     
     while(1) 
     {
+    
         // Insert your code here
+        if (digitalRead(GPIO_SWITCH)) {
+            ledState = !ledState;
+
+            delay(300);
+        }
+
+        // printf("%d", ledState);
+            
+        digitalWrite(GPIO_LED, ledState);
+        
     }
 }
