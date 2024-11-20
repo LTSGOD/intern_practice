@@ -43,8 +43,12 @@ int main()
         // The output "HIGH" of GPIO 17 can be controlled via GPSET0 (GPIO Pin Output Set Register 0)
         // Insert your code here that makes GIPO 17 "HIGH" via GPSET0 and then sleeps for 1 second
 
+        gpio[GPSET0_OFFSET / 4] = 0xFFFFFFFF;
+        sleep(1);
         // The output "LOW" of GPIO 17 can be controlled via GPCLR0 (GPIO Pin Output Clear Register 0)
         // Insert your code here that makes GIPO 17 "LOW" via GPCLR0 and the sleeps for 1 second
+        gpio[GPCLR0_OFFSET / 4] = 0xFFFFFFFF;
+        sleep(1);
     }
 
     return 0;
