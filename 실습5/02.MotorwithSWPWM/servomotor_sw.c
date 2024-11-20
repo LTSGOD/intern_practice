@@ -11,6 +11,13 @@ void moveMotor(int degree)
     int pulseWidth;         
 
     // Insert your code here
+    dutyCycle = degree / 180.0 * 5 + 5.0;
+    pulseWidth = dutyCycle * (PWM_RANGE / 100);
+
+    printf("dutyCycle = %.1f%%\n", dutyCycle);
+    printf("pulseWidth = %d\n", pulseWidth);
+
+    softPwmWrite(PIN, pulseWidth);
 }
 
 int main() 
