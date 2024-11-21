@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define MAX_TASK 100
+#define INT_MAX 0x7FFFFFFF
+
+#define INPUT_FILE_NAME "sched_param.txt"
+
+struct Task {
+    char name[16];
+    int ID;
+    int period;
+    int executionTime;
+    int deadline;    
+    int priority;       
+    
+    int responseTime;
+} task[MAX_TASK];
+
+int taskCount = 0;
+
+int readInput()
+{
+    FILE *f;
+    int i;
+    char temp;
+
+    f = fopen(INPUT_FILE_NAME, "r");
+	if (f == NULL) {
+		printf("Error: Failed to open %s.\n", INPUT_FILE_NAME);
+		return -1;
+	}
+
+	/* Read input file to get task parameters */
+	fscanf(f, "%c ", &temp);
+
+	for (i = 0; i<MAX_TASK; i++) {
+		fscanf(f, "%s ", task[i].name);
+		if (task[i].name[0] == '$') {
+            fclose(f);
+            break;
+		}
+
+		task[i].ID = i;
+		fscanf(f, "%d ", &task[i].period);
+		fscanf(f, "%d ", &task[i].executionTime);
+		fscanf(f, "%d ", &task[i].deadline);
+		fscanf(f, "%d \n", &task[i].priority);
+        task[i].responseTime = 0;
+        taskCount++;
+	}
+
+	for (i = 0; i<taskCount; i++) {
+		printf("Task %s: ", task[i].name);
+		printf("Period = %d, ", task[i].period);
+		printf("Execution time = %d, ", task[i].executionTime);
+		printf("Deadline = %d, ", task[i].deadline);
+		printf("Priority = %d, \n", task[i].priority);
+	}
+
+	printf("\n");
+
+	return taskCount;
+}
