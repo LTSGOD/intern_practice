@@ -20,6 +20,9 @@ int main()
      
     /* Create the shared memory object */
     shm_fd = shm_open(name, O_CREAT | O_RDWR, 0666);
+    if (shm_fd == -1) {
+        perror("shm open fail");
+    }
  
     /* Map the shared memory object */
     shmPointer = (unsigned char*)mmap(0, messageSize*MESSAGE_TOTAL, PROT_WRITE | PROT_READ, MAP_SHARED, shm_fd, 0);
