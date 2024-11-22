@@ -1,11 +1,12 @@
 CC = gcc
-CFLAGS = -lwiringPi 
-OBJS = server_receiver.o
-TARGET = executable
+CFLAGS = -lwiringPi
+SRCS = client_sender.c server_receiver.c
+TARGETS = $(SRCS:.c=)
 
-$(TARGET) : $(OBJS)
-	$(CC) -o $@ $(OBJS) $(CFLAGS)
+all: $(TARGETS)
+
+%: %.c
+	$(CC) -o $@ $< $(CFLAGS)
 
 clean:
-	rm	-f	*.o
-	rm	-f	$(TARGET)
+	rm -f $(TARGETS) *.o
