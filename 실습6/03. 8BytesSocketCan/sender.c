@@ -55,6 +55,24 @@ int main(void)
                 // Insert your code here to send inputString using write() function
                 // You may need to use the above declared variables "packetTotal" and "lastPacketSize"
         
+                int strLength = (int)strlen(inputString);
+                packetTotal = strLength / 8;
+                lastPacketSize = strLength % 8;
+
+                frame.can_id = 0x555;
+                for (int i = 0; i < packetTotal; i++) {
+
+                        memcpy(frame.data, (char *)inputString + (i * 8), 8); // data 복사
+                        frame.can_dlc = 8; // 데이터 크기 지정
+                        write(socketCANDescriptor, &frame, sizeof(struct can_frame));
+                }
+
+                // 남은 데이터 복사
+                if (lastPacketSize != 0) {
+                        memcpy(frame.data, (char *)inputString + (packetTotal * 8), lastPacketSize); // data 복사
+                        frame.can_dlc = lastPacketSize; // 데이터 크기 지정
+                        write(socketCANDescriptor, &frame, sizeof(struct can_frame));
+                }
         }
         
         if (close(socketCANDescriptor) < 0) {
