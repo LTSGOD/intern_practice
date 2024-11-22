@@ -1,11 +1,12 @@
 CC = gcc
-CFLAGS = -lwiringPi 
-OBJS = lcd2.o
-TARGET = lcd2
+CFLAGS = -lwiringPi
+SRCS = lcd1.c lcd2.c
+TARGETS = $(SRCS:.c=)
 
-$(TARGET) : $(OBJS)
-	$(CC) -o $@ $(OBJS) $(CFLAGS)
+all: $(TARGETS)
+
+%: %.c
+	$(CC) -o $@ $< $(CFLAGS)
 
 clean:
-	rm	-f	*.o
-	rm	-f	$(TARGET)
+	rm -f $(TARGETS) *.o
