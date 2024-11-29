@@ -25,7 +25,7 @@ void sendFile(FILE *fp, int sockfd)
 
 int main()
 {
-    char *ip = "10.69.1.253";       // IP address of server (RPi)
+    char *ip = "1.168.1.81";       // IP address of server (RPi)
     int port = 8080;
     int ret;
 

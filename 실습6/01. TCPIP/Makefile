@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -lwiringPi
-SRCS = lcd1.c lcd2.c
+SRCS = client_sender.c server_receiver.c
 TARGETS = $(SRCS:.c=)
 
 all: $(TARGETS)

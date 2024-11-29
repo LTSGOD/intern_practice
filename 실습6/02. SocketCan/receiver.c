@@ -19,7 +19,7 @@ int main(void)
         struct ifreq ifr;
         struct can_frame frame;
         
-        char receiveMessage[8];
+        int receiveData[2]; // 수신 데이터 배열
                
         printf("SocketCAN Receiver\n");
         
@@ -48,16 +48,18 @@ int main(void)
                 }
 
                 printf("0x%03X [%d] ", frame.can_id, frame.can_dlc);                
-                memcpy(receiveMessage, (unsigned char *)(frame.data), frame.can_dlc);
-                receiveMessage[frame.can_dlc] = '\n';
-                printf("%s", receiveMessage);
+                memcpy(receiveData, (unsigned char *)(frame.data), frame.can_dlc);
 
-                if ((receiveMessage[0] == 'q') && (frame.can_dlc == 2)) {
+                printf("%d %d\n", receiveData[0], receiveData[1]); // 수신 데이터 printf
+
+                printf("%d\n", nbytesReceived);
+
+                if ((receiveData[0] == 'q') && (frame.can_dlc == 2)) {
                         printf("QUIT COMMAND!\n");
                         break;
                 }
 
-                bzero(receiveMessage, 8);
+                bzero(receiveData, 8);
         }
 
         if (close(socketCANDescriptor) < 0) 
